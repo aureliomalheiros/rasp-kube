@@ -1,0 +1,41 @@
+---
+- name: Copy join command script from master to node
+  copy:
+    src: "/home/tribix/join_command.sh"
+    dest: "/home/tribix/join_command.sh"
+    remote_src: yes
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['nodes'] }}"
+
+- name: Ensure correct permissions for join_command.sh on node
+  file:
+    path: "/home/tribix/join_command.sh"
+    owner: tribix
+    group: tribix
+    mode: '0755'
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['nodes'] }}"
+
+- name: Add shebang to join_command.sh (if not present)
+  lineinfile:
+    path: "/home/tribix/join_command.sh"
+    line: "#!/bin/bash"
+    insertafter: BOF
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['nodes'] }}"
+
+- name: Check if port 10250 is in use
+  command: "lsof -i :10250"
+  register: port_check
+  ignore_errors: true
+
+- name: Skip join command if port 10250 is in use
+  debug:
+    msg: "Port 10250 is in use, skipping join."
+  when: port_check.rc == 0  # Port is in use
+
+- name: Join Kubernetes cluster on node
+  command: "/bin/bash /home/tribix/join_command.sh"
+  when: port_check.rc != 0  # Only run if port 10250 is not in use
+  become: yes
+

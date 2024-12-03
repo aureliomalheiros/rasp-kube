@@ -1,25 +1,34 @@
 # Rasp Kube
 
-## First time
-
-### Into Raspberry
-
-git clone the repository:
+You need configure ssh and static IP in your Raspberry.
 
 ```
-git clone command
-```
-
-Running the command into Raspberry:
-
-```
-chmod +x conf.sh
-sudo ./conf.sh
-```
-
-### Into computer
-
-```bash
-chmod +x startup.sh
-./startup.sh
+kubernetes-setup/
+├── ansible.cfg
+├── inventory/
+│   ├── hosts.yml
+├── group_vars/
+│   ├── all.yml
+│   ├── masters.yml
+│   └── nodes.yml
+├── roles/
+│   ├── common/
+│   │   ├── tasks/
+│   │   │   └── main.yml
+│   │   ├── handlers/
+│   │   │   └── main.yml
+│   │   ├── files/
+│   │   ├── templates/
+│   │   └── vars/
+│   │       └── main.yml
+│   ├── master/
+│   │   ├── tasks/
+│   │   │   └── main.yml
+│   │   └── templates/
+│   ├── node/
+│   │   ├── tasks/
+│   │   │   └── main.yml
+│   │   └── templates/
+└── site.yml
+           
 ```

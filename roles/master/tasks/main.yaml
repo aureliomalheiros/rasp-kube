@@ -1,0 +1,30 @@
+---
+- name: Generate join command on master
+  command: kubeadm token create --print-join-command
+  register: join_command_output
+  delegate_to: master1
+
+- name: Copy join command to all nodes
+  copy:
+    content: "{{ join_command_output.stdout }}"
+    dest: "/home/tribix/join_command.sh"
+    mode: "0755"
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['nodes'] }}"
+
+- name: Add shebang to join_command.sh (if not present)
+  lineinfile:
+    path: "/home/tribix/join_command.sh"
+    line: "#!/bin/bash"
+    insertafter: BOF
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['nodes'] }}"
+
+- name: Ensure correct permissions for join_command.sh on all nodes
+  file:
+    path: "/home/tribix/join_command.sh"
+    owner: tribix
+    group: tribix
+    mode: '0755'
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['nodes'] }}"
