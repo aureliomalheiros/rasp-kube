@@ -1,1 +1,0 @@
-join_command_file: "/home/{{ ansible_user }}/join_command.sh"

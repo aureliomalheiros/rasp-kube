@@ -1,0 +1,4 @@
+---
+- import_playbook: common/all.yaml
+- import_playbook: masters/main.yaml
+- import_playbook: nodes/main.yaml

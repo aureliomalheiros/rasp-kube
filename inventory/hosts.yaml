@@ -3,12 +3,30 @@ all:
     masters:
       hosts:
         master1:
-          ansible_host: 192.168.100.64
+          ansible_host: node01.local
           ansible_user: tribix
           ansible_become: true
     nodes:
       hosts:
         node1:
-          ansible_host: 192.168.100.65
+          ansible_host: node02.local
           ansible_user: tribix
           ansible_become: true
+all:
+  hosts:
+    master1:
+      ansible_host: node01.local
+      ansible_user: tribix
+      ansible_become: true
+    node1:
+      ansible_host: node02.local
+      ansible_user: tribix
+      ansible_become: true
+  children:
+    masters:
+      hosts:
+        master1:
+    nodes:
+      hosts:
+        node1:
+        

@@ -1,0 +1,26 @@
+---
+- hosts: nodes
+  become: yes
+  tasks:
+    - name: Fetch join command from master to controller
+      delegate_to: master1
+      fetch:
+        src: /home/tribix/join_command.sh
+        dest: /tmp/join_command.sh
+        flat: yes
+
+    - name: Copy join command from controller to node
+      copy:
+        src: /tmp/join_command.sh
+        dest: /home/tribix/join_command.sh
+        owner: tribix
+        group: tribix
+        mode: '0755'
+
+    - name: Run join command
+      shell: bash /home/tribix/join_command.sh
+
+    - name: Remove join command
+      file:
+        path: /home/tribix/join_command.sh
+        state: absent

@@ -1,0 +1,35 @@
+---
+- hosts: masters
+  become: yes
+  tasks:
+    - name: Check if Kubernetes is already initialized
+      stat:
+        path: /etc/kubernetes/admin.conf
+      register: kubeadm_init
+
+    - name: Initialize Kubernetes cluster
+      shell: kubeadm init --apiserver-advertise-address=0.0.0.0 --pod-network-cidr=192.167.0.0/16
+      when: not kubeadm_init.stat.exists
+
+    - name: Generate token for joining nodes
+      shell: kubeadm token create --print-join-command > /home/tribix/join_command.sh
+
+    - name: Set up kubeconfig for the tribix user
+      shell: |
+        mkdir -p /home/tribix/.kube
+        cp -f /etc/kubernetes/admin.conf /home/tribix/.kube/config
+        chown tribix:tribix /home/tribix/.kube/config
+
+    - name: Apply Calico network plugin
+      become_user: tribix
+      shell: |
+        curl https://raw.githubusercontent.com/projectcalico/calico/v3.26.0/manifests/calico.yaml -o /tmp/calico.yaml
+        chown tribix:tribix /tmp/calico.yaml
+        kubectl apply -f /tmp/calico.yaml --validate=false
+
+    - name: Set up kubeconfig for the tribix user
+      become_user: tribix
+      shell: |
+        mkdir -p /home/tribix/.kube
+        cp -f /etc/kubernetes/admin.conf /home/tribix/.kube/config
+        chown tribix:tribix /home/tribix/.kube/config
