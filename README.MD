@@ -37,7 +37,7 @@ network:
         - 192.168.2.10/24
       routes:
         - to: default
-          via: 192.168.1.1
+          via: 192.168.2.1
       nameservers:
         addresses: [1.1.1.1,8.8.8.8]
 ```
