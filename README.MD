@@ -18,6 +18,12 @@ This repository contains Ansible playbooks to set up a Kubernetes cluster on Ras
 - Install Ansible:
   - Install Ansible on your control machine (the machine from which you will run the playbooks).
 
+> [!Note]
+> Create ssh
+> `ssh-keygen -t rsa -b 4096 -C "tribix@machine.local"`
+> Copy ssh
+> `ssh-copy-id tribix@machine.local`
+
 #### Configure Static IP
 
 ```
