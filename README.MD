@@ -110,3 +110,18 @@ rasp-kube/
 ```
 ansible-playbook k8s.yaml
 ```
+
+#### Enable Promisc mode (Raspberry in network Wifi)
+
+When use MetalLB you need enable promisc mode in network of the raspberry, because you can problems in comunication.
+
+> [!Important]
+> [ISSUE](https://metallb.io/troubleshooting/#using-wifi-and-cant-reach-the-service)
+> I try add the configuration in ansible, but I have problem in start service network of the kubernetes.
+
+Copy the [Script](scripts/promisc-service.sh) and send in your cluster.
+
+```bash
+chmod +x promisc-service.sh
+./promisc-service.sh
+```
